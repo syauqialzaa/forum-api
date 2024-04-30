@@ -7,7 +7,6 @@ const NewAuth = require('../../../domains/authentications/entities/new-authentic
 
 describe('GetAuthenticationUseCase', () => {
   it('should orchestrating the get authentication action correctly', async () => {
-    // Arrange
     const useCasePayload = {
       username: 'dicoding',
       password: 'secret'
@@ -21,21 +20,17 @@ describe('GetAuthenticationUseCase', () => {
     const mockAuthenticationTokenManager = new AuthenticationTokenManager()
     const mockPasswordHash = new PasswordHash()
 
-    // Mocking
     mockUserRepository.getPasswordByUsername = jest.fn()
       .mockImplementation(() => Promise.resolve('encrypted_password'))
-    mockPasswordHash.comparePassword = jest.fn()
-      .mockImplementation(() => Promise.resolve())
+    mockPasswordHash.comparePassword = jest.fn(() => Promise.resolve())
     mockAuthenticationTokenManager.createAccessToken = jest.fn()
       .mockImplementation(() => Promise.resolve(mockedAuthentication.accessToken))
     mockAuthenticationTokenManager.createRefreshToken = jest.fn()
       .mockImplementation(() => Promise.resolve(mockedAuthentication.refreshToken))
     mockUserRepository.getIdByUsername = jest.fn()
       .mockImplementation(() => Promise.resolve('user-123'))
-    mockAuthenticationRepository.addToken = jest.fn()
-      .mockImplementation(() => Promise.resolve())
+    mockAuthenticationRepository.addToken = jest.fn(() => Promise.resolve())
 
-    // create use case instance
     const loginUserUseCase = new LoginUserUseCase({
       userRepository: mockUserRepository,
       authenticationRepository: mockAuthenticationRepository,
@@ -43,14 +38,9 @@ describe('GetAuthenticationUseCase', () => {
       passwordHash: mockPasswordHash
     })
 
-    // Action
     const actualAuthentication = await loginUserUseCase.execute(useCasePayload)
 
-    // Assert
-    expect(actualAuthentication).toEqual(new NewAuth({
-      accessToken: 'access_token',
-      refreshToken: 'refresh_token'
-    }))
+    expect(actualAuthentication).toEqual(mockedAuthentication)
     expect(mockUserRepository.getPasswordByUsername)
       .toBeCalledWith('dicoding')
     expect(mockPasswordHash.comparePassword)
