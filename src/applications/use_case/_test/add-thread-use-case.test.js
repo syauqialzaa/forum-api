@@ -13,7 +13,7 @@ describe('', () => {
     const expectedAddedThread = new AddedThread({
       id: 'thread-123',
       title: 'this is title.',
-      ownerId: useCaseUserIdCredentials
+      owner: useCaseUserIdCredentials
     })
 
     const mockThreadRepository = new ThreadRepository()
@@ -23,7 +23,7 @@ describe('', () => {
         new AddedThread({
           id: 'thread-123',
           title: 'this is title.',
-          ownerId: useCaseUserIdCredentials
+          owner: useCaseUserIdCredentials
         })
       ))
 
@@ -38,7 +38,7 @@ describe('', () => {
       new AddThread({
         title: useCasePayload.title,
         body: useCasePayload.body,
-        ownerId: useCaseUserIdCredentials
+        owner: useCaseUserIdCredentials
       })
     )
   })

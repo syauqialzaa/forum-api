@@ -13,7 +13,7 @@ describe('AddThread entitites', () => {
     const payload = {
       title: true,
       body: {},
-      ownerId: {}
+      owner: {}
     }
 
     expect(() => new AddThread(payload)).toThrowError('ADD_THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION')
@@ -23,13 +23,13 @@ describe('AddThread entitites', () => {
     const payload = {
       title: 'this is title.',
       body: 'this is body.',
-      ownerId: 'user-123'
+      owner: 'user-123'
     }
 
     const addThread = new AddThread(payload)
 
     expect(addThread.title).toEqual(payload.title)
     expect(addThread.body).toEqual(payload.body)
-    expect(addThread.ownerId).toEqual(payload.ownerId)
+    expect(addThread.owner).toEqual(payload.owner)
   })
 })

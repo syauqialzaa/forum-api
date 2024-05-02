@@ -18,7 +18,7 @@ describe('AddReplyUseCase', () => {
     const expectedAddedReply = new AddedReply({
       id: 'reply-123',
       content: useCasePayload.content,
-      ownerId: useCaseUserIdCredentials
+      owner: useCaseUserIdCredentials
     })
 
     const mockReplyRepository = new ReplyRepository()
@@ -32,7 +32,7 @@ describe('AddReplyUseCase', () => {
         new AddedReply({
           id: 'reply-123',
           content: useCasePayload.content,
-          ownerId: useCaseUserIdCredentials
+          owner: useCaseUserIdCredentials
         })
       ))
 
@@ -50,8 +50,8 @@ describe('AddReplyUseCase', () => {
     expect(mockReplyRepository.addReply).toBeCalledWith(
       new AddReply({
         content: useCasePayload.content,
-        commentId: useCaseParams.commentId,
-        ownerId: useCaseUserIdCredentials
+        comment: useCaseParams.commentId,
+        owner: useCaseUserIdCredentials
       })
     )
   })

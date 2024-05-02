@@ -12,8 +12,8 @@ describe('AddComment entities', () => {
   it('should throw error when payload did not meet data type specification', () => {
     const payload = {
       content: true,
-      threadId: true,
-      ownerId: true
+      thread: true,
+      owner: true
     }
 
     expect(() => new AddComment(payload)).toThrowError('ADD_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION')
@@ -22,14 +22,14 @@ describe('AddComment entities', () => {
   it('should create addComment object correctly', () => {
     const payload = {
       content: 'this is a comment.',
-      threadId: 'thread-123',
-      ownerId: 'user-123'
+      thread: 'thread-123',
+      owner: 'user-123'
     }
 
     const addComment = new AddComment(payload)
 
     expect(addComment.content).toEqual(payload.content)
-    expect(addComment.threadId).toEqual(payload.threadId)
-    expect(addComment.ownerId).toEqual(payload.ownerId)
+    expect(addComment.thread).toEqual(payload.thread)
+    expect(addComment.owner).toEqual(payload.owner)
   })
 })

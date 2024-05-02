@@ -12,8 +12,8 @@ describe('AddReply entities', () => {
   it('should throw error when payload did not meet data type specification', () => {
     const payload = {
       content: true,
-      commentId: true,
-      ownerId: true
+      comment: true,
+      owner: true
     }
 
     expect(() => new AddReply(payload)).toThrowError('ADD_REPLY.NOT_MEET_DATA_TYPE_SPECIFICATION')
@@ -22,14 +22,14 @@ describe('AddReply entities', () => {
   it('should create addReply object correctly', () => {
     const payload = {
       content: 'this is a reply.',
-      commentId: 'comment-123',
-      ownerId: 'user-123'
+      comment: 'comment-123',
+      owner: 'user-123'
     }
 
     const addReply = new AddReply(payload)
 
     expect(addReply.content).toEqual(payload.content)
-    expect(addReply.commentId).toEqual(payload.commentId)
-    expect(addReply.ownerId).toEqual(payload.ownerId)
+    expect(addReply.comment).toEqual(payload.comment)
+    expect(addReply.owner).toEqual(payload.owner)
   })
 })

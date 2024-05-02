@@ -13,7 +13,7 @@ describe('AddedComment entities', () => {
     const payload = {
       id: true,
       content: true,
-      ownerId: true
+      owner: true
     }
 
     expect(() => new AddedComment(payload)).toThrowError('ADDED_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION')
@@ -23,13 +23,13 @@ describe('AddedComment entities', () => {
     const payload = {
       id: 'comment-123',
       content: 'this is a comment.',
-      ownerId: 'user-123'
+      owner: 'user-123'
     }
 
     const addedComment = new AddedComment(payload)
 
     expect(addedComment.id).toEqual(payload.id)
     expect(addedComment.content).toEqual(payload.content)
-    expect(addedComment.ownerId).toEqual(payload.ownerId)
+    expect(addedComment.owner).toEqual(payload.owner)
   })
 })

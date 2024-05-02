@@ -12,8 +12,8 @@ class AddCommentUseCase {
 
     const addComment = new AddComment({
       content,
-      threadId: useCaseThreadId,
-      ownerId: useCaseUserIdCredentials
+      thread: useCaseThreadId,
+      owner: useCaseUserIdCredentials
     })
 
     return this._commentRepository.addComment(addComment)

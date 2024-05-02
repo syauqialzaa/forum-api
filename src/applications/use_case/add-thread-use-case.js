@@ -11,7 +11,7 @@ class AddThreadUseCase {
     const addThread = new AddThread({
       title,
       body,
-      ownerId: useCaseUserIdCredentials
+      owner: useCaseUserIdCredentials
     })
 
     return this._threadRepository.addThread(addThread)

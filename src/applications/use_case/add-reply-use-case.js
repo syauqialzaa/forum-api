@@ -16,8 +16,8 @@ class AddReplyUseCase {
 
     const addReply = new AddReply({
       content,
-      commentId,
-      ownerId: useCaseUserIdCredentials
+      comment: commentId,
+      owner: useCaseUserIdCredentials
     })
 
     return this._replyRepository.addReply(addReply)
