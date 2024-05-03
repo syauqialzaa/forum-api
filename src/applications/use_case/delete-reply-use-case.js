@@ -6,14 +6,14 @@ class DeleteReplyUseCase {
   }
 
   async execute (useCasePayload, useCaseUserIdCredentials) {
-    const { id, threadId, commentId } = useCasePayload
+    const { replyId, threadId, commentId } = useCasePayload
 
     await this._threadRepository.verifyAvailableThread(threadId)
     await this._commentRepository.verifyAvailableComment(commentId)
-    await this._replyRepository.verifyAvailableReply(id)
-    await this._replyRepository.verifyReplyOwner(id, useCaseUserIdCredentials)
+    await this._replyRepository.verifyAvailableReply(replyId)
+    await this._replyRepository.verifyReplyOwner(replyId, useCaseUserIdCredentials)
 
-    await this._replyRepository.deleteReply(id)
+    await this._replyRepository.deleteReply(replyId)
   }
 }
 
