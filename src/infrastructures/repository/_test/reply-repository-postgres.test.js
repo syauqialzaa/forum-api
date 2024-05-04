@@ -93,6 +93,18 @@ describe('ReplyRepositoryPostgres', () => {
 
       await expect(replyRepositoryPostgres.verifyReplyOwner(reply.id, userIdCredentials)).resolves.not.toThrowError(AuthorizationError)
     })
+
+    it('should return replyId when reply owner is verified', async () => {
+      const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {})
+      const reply = await RepliesTableTestHelper.addReply({
+        comment: commentId,
+        owner: userIdCredentials
+      })
+
+      const verifyReplyOwner = await replyRepositoryPostgres.verifyReplyOwner(reply.id, userIdCredentials)
+
+      expect(verifyReplyOwner).toStrictEqual({ id: reply.id })
+    })
   })
 
   describe('verifyAvailableReply function', () => {
@@ -122,6 +134,18 @@ describe('ReplyRepositoryPostgres', () => {
 
       return expect(replyRepositoryPostgres.verifyAvailableReply(reply.id)).resolves.not.toThrowError(NotFoundError)
     })
+
+    it('should return id and isDeleted properties when reply availability is verified', async () => {
+      const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {})
+      const reply = await RepliesTableTestHelper.addReply({
+        comment: commentId,
+        owner: userIdCredentials
+      })
+
+      const verifyAvailableReply = await replyRepositoryPostgres.verifyAvailableReply(reply.id)
+
+      expect(verifyAvailableReply).toStrictEqual({ id: reply.id, isDeleted: false })
+    })
   })
 
   describe('getRepliesByThreadId function', () => {
@@ -132,14 +156,25 @@ describe('ReplyRepositoryPostgres', () => {
       })
       const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {})
 
-      const getReply = await replyRepositoryPostgres.getRepliesByThreadId(threadId)
+      const getReplies = await replyRepositoryPostgres.getRepliesByThreadId(threadId)
 
-      expect(getReply[0]).toHaveProperty('id')
-      expect(getReply[0]).toHaveProperty('content')
-      expect(getReply[0]).toHaveProperty('date')
-      expect(getReply[0]).toHaveProperty('username')
-      expect(getReply[0]).toHaveProperty('commentId')
-      expect(getReply[0]).toHaveProperty('isDeleted')
+      expect(getReplies).toHaveLength(1)
+      getReplies.forEach(reply => {
+        expect(reply).toHaveProperty('id')
+        expect(reply).toHaveProperty('content')
+        expect(reply).toHaveProperty('date')
+        expect(reply).toHaveProperty('username')
+        expect(reply).toHaveProperty('commentId')
+        expect(reply).toHaveProperty('isDeleted')
+        expect(reply).toEqual(expect.objectContaining({
+          id: expect.any(String),
+          content: expect.any(String),
+          date: expect.any(Date),
+          username: expect.any(String),
+          commentId: expect.any(String),
+          isDeleted: expect.any(Boolean)
+        }))
+      })
     })
   })
 

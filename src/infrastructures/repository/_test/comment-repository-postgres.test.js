@@ -85,6 +85,18 @@ describe('CommentRepositoryPostgres', () => {
 
       await expect(commentRepositoryPostgres.verifyCommentOwner(comment.id, userIdCredentials)).resolves.not.toThrowError(AuthorizationError)
     })
+
+    it('should return commentId when comment owner is verified', async () => {
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {})
+      const comment = await CommentsTableTestHelper.addComment({
+        thread: threadId,
+        owner: userIdCredentials
+      })
+
+      const verifyCommentOwner = await commentRepositoryPostgres.verifyCommentOwner(comment.id, userIdCredentials)
+
+      expect(verifyCommentOwner).toStrictEqual({ id: comment.id })
+    })
   })
 
   describe('verifyAvailableComment function', () => {
@@ -113,6 +125,18 @@ describe('CommentRepositoryPostgres', () => {
       })
 
       return expect(commentRepositoryPostgres.verifyAvailableComment(comment.id)).resolves.not.toThrowError(NotFoundError)
+    })
+
+    it('should return id and isDeleted properties when comment availability is verified', async () => {
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {})
+      const comment = await CommentsTableTestHelper.addComment({
+        thread: threadId,
+        owner: userIdCredentials
+      })
+
+      const verifyAvailableComment = await commentRepositoryPostgres.verifyAvailableComment(comment.id)
+
+      expect(verifyAvailableComment).toStrictEqual({ id: comment.id, isDeleted: false })
     })
   })
 
@@ -144,6 +168,20 @@ describe('CommentRepositoryPostgres', () => {
       const getCommentsByThreadId = await commentRepositoryPostgres.getCommentsByThreadId(threadId)
 
       expect(getCommentsByThreadId).toHaveLength(3)
+      getCommentsByThreadId.forEach(comment => {
+        expect(comment).toHaveProperty('id')
+        expect(comment).toHaveProperty('username')
+        expect(comment).toHaveProperty('date')
+        expect(comment).toHaveProperty('content')
+        expect(comment).toHaveProperty('isDeleted')
+        expect(comment).toEqual(expect.objectContaining({
+          id: expect.any(String),
+          username: expect.any(String),
+          date: expect.any(Date),
+          content: expect.any(String),
+          isDeleted: expect.any(Boolean)
+        }))
+      })
     })
   })
 

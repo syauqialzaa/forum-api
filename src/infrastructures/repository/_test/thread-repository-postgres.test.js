@@ -80,7 +80,7 @@ describe('ThreadRepositoryPostgres', () => {
     })
   })
 
-  describe('getThreadId function', () => {
+  describe('getThreadById function', () => {
     it('should run function getThreadById correctly and return expected properties', async () => {
       const thread = await ThreadsTableTestHelper.addThread({
         owner: userIdCredentials
