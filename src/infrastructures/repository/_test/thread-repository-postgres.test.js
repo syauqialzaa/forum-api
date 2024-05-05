@@ -11,7 +11,8 @@ describe('ThreadRepositoryPostgres', () => {
 
   beforeEach(async () => {
     await UsersTableTestHelper.addUser({
-      id: userIdCredentials
+      id: userIdCredentials,
+      username: 'alzasyauqi'
     })
   })
 
@@ -82,13 +83,23 @@ describe('ThreadRepositoryPostgres', () => {
 
   describe('getThreadById function', () => {
     it('should run function getThreadById correctly and return expected properties', async () => {
-      const thread = await ThreadsTableTestHelper.addThread({
+      const thread = {
+        id: 'thread-123',
+        title: 'this is title.',
+        body: 'this is body.',
         owner: userIdCredentials
-      })
+      }
+      await ThreadsTableTestHelper.addThread({ ...thread })
       const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {})
 
       const detailThread = await threadRepositoryPostgres.getThreadById(thread.id)
 
+      console.log(thread)
+      expect(detailThread.id).toStrictEqual(thread.id)
+      expect(detailThread.title).toStrictEqual(thread.title)
+      expect(detailThread.body).toStrictEqual(thread.body)
+      expect(detailThread.date).toStrictEqual(expect.any(Date))
+      expect(detailThread.username).toStrictEqual('alzasyauqi')
       expect(detailThread).toHaveProperty('id')
       expect(detailThread).toHaveProperty('title')
       expect(detailThread).toHaveProperty('body')

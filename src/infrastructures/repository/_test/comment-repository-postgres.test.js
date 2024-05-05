@@ -14,7 +14,8 @@ describe('CommentRepositoryPostgres', () => {
 
   beforeEach(async () => {
     await UsersTableTestHelper.addUser({
-      id: userIdCredentials
+      id: userIdCredentials,
+      username: 'alzasyauqi'
     })
     await ThreadsTableTestHelper.addThread({
       id: threadId,
@@ -149,38 +150,41 @@ describe('CommentRepositoryPostgres', () => {
     })
 
     it('should run function getCommentsByThreadId correctly and return comments ', async () => {
-      const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {})
-      await CommentsTableTestHelper.addComment({
-        thread: threadId,
-        owner: userIdCredentials
-      })
-      await CommentsTableTestHelper.addComment({
+      const comment1 = {
         id: 'comment-111',
+        content: 'first comment.',
         thread: threadId,
         owner: userIdCredentials
-      })
-      await CommentsTableTestHelper.addComment({
+      }
+      const comment2 = {
         id: 'comment-222',
+        content: 'second comment.',
         thread: threadId,
         owner: userIdCredentials
-      })
+      }
+      await CommentsTableTestHelper.addComment({ ...comment1 })
+      await CommentsTableTestHelper.addComment({ ...comment2 })
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {})
 
       const getCommentsByThreadId = await commentRepositoryPostgres.getCommentsByThreadId(threadId)
 
-      expect(getCommentsByThreadId).toHaveLength(3)
+      expect(getCommentsByThreadId).toHaveLength(2)
+      expect(getCommentsByThreadId[0].id).toStrictEqual(comment1.id)
+      expect(getCommentsByThreadId[0].username).toStrictEqual('alzasyauqi')
+      expect(getCommentsByThreadId[0].date).toStrictEqual(expect.any(Date))
+      expect(getCommentsByThreadId[0].content).toStrictEqual(comment1.content)
+      expect(getCommentsByThreadId[0].isDeleted).toStrictEqual(false)
+      expect(getCommentsByThreadId[1].id).toStrictEqual(comment2.id)
+      expect(getCommentsByThreadId[1].username).toStrictEqual('alzasyauqi')
+      expect(getCommentsByThreadId[1].date).toStrictEqual(expect.any(Date))
+      expect(getCommentsByThreadId[1].content).toStrictEqual(comment2.content)
+      expect(getCommentsByThreadId[1].isDeleted).toStrictEqual(false)
       getCommentsByThreadId.forEach(comment => {
         expect(comment).toHaveProperty('id')
         expect(comment).toHaveProperty('username')
         expect(comment).toHaveProperty('date')
         expect(comment).toHaveProperty('content')
         expect(comment).toHaveProperty('isDeleted')
-        expect(comment).toEqual(expect.objectContaining({
-          id: expect.any(String),
-          username: expect.any(String),
-          date: expect.any(Date),
-          content: expect.any(String),
-          isDeleted: expect.any(Boolean)
-        }))
       })
     })
   })

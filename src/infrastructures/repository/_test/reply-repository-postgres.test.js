@@ -16,7 +16,8 @@ describe('ReplyRepositoryPostgres', () => {
 
   beforeEach(async () => {
     await UsersTableTeastHelper.addUser({
-      id: userIdCredentials
+      id: userIdCredentials,
+      username: 'alzasyauqi'
     })
     await ThreadTableTestHelper.addThread({
       id: threadId,
@@ -150,15 +151,37 @@ describe('ReplyRepositoryPostgres', () => {
 
   describe('getRepliesByThreadId function', () => {
     it('should run function getRepliesByThreadId correctly and return expected properties', async () => {
-      await RepliesTableTestHelper.addReply({
+      const reply1 = {
+        id: 'reply-111',
+        content: 'this is a reply.',
         comment: commentId,
         owner: userIdCredentials
-      })
+      }
+      const reply2 = {
+        id: 'reply-222',
+        content: 'this is another reply.',
+        comment: commentId,
+        owner: userIdCredentials
+      }
+      await RepliesTableTestHelper.addReply({ ...reply1 })
+      await RepliesTableTestHelper.addReply({ ...reply2 })
       const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {})
 
       const getReplies = await replyRepositoryPostgres.getRepliesByThreadId(threadId)
 
-      expect(getReplies).toHaveLength(1)
+      expect(getReplies).toHaveLength(2)
+      expect(getReplies[0].id).toStrictEqual(reply1.id)
+      expect(getReplies[0].content).toStrictEqual(reply1.content)
+      expect(getReplies[0].date).toStrictEqual(expect.any(Date))
+      expect(getReplies[0].username).toStrictEqual('alzasyauqi')
+      expect(getReplies[0].commentId).toStrictEqual(reply1.comment)
+      expect(getReplies[0].isDeleted).toStrictEqual(false)
+      expect(getReplies[1].id).toStrictEqual(reply2.id)
+      expect(getReplies[1].content).toStrictEqual(reply2.content)
+      expect(getReplies[1].date).toStrictEqual(expect.any(Date))
+      expect(getReplies[1].username).toStrictEqual('alzasyauqi')
+      expect(getReplies[0].commentId).toStrictEqual(reply2.comment)
+      expect(getReplies[1].isDeleted).toStrictEqual(false)
       getReplies.forEach(reply => {
         expect(reply).toHaveProperty('id')
         expect(reply).toHaveProperty('content')
@@ -166,14 +189,6 @@ describe('ReplyRepositoryPostgres', () => {
         expect(reply).toHaveProperty('username')
         expect(reply).toHaveProperty('commentId')
         expect(reply).toHaveProperty('isDeleted')
-        expect(reply).toEqual(expect.objectContaining({
-          id: expect.any(String),
-          content: expect.any(String),
-          date: expect.any(Date),
-          username: expect.any(String),
-          commentId: expect.any(String),
-          isDeleted: expect.any(Boolean)
-        }))
       })
     })
   })
