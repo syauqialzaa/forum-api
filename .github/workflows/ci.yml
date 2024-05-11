@@ -19,7 +19,7 @@ jobs:
         env:
           POSTGRES_USER: ${{ secrets.PGUSER }}
           POSTGRES_PASSWORD: ${{ secrets.PGPASSWORD }}
-          POSTGRES_DB: ${{ secrets.PGDATABASE }}
+          POSTGRES_DB: ${{ secrets.PGDATABASE_TEST }}
           
         options: >-
           --health-cmd pg_isready
