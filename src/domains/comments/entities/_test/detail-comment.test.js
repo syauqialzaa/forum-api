@@ -15,7 +15,8 @@ describe('DetailComment entities', () => {
       username: true,
       date: '2024-04-29T15:20:59.809Z',
       content: true,
-      replies: [{}]
+      replies: [{}],
+      likeCount: '0'
     }
 
     expect(() => new DetailComment(payload)).toThrowError('DETAIL_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION')
@@ -27,7 +28,8 @@ describe('DetailComment entities', () => {
       username: 'alzasyauqi',
       date: '2024-04-29T15:20:59.809Z',
       content: 'this is a comment.',
-      replies: [{}]
+      replies: [{}],
+      likeCount: 0
     }
 
     const detailComment = new DetailComment(payload)

@@ -19,6 +19,8 @@ const CommentRepository = require('../domains/comments/comment-repository')
 const CommentRepositoryPostgres = require('./repository/comment-repository-postgres')
 const ReplyRepository = require('../domains/replies/reply-repository')
 const ReplyRepositoryPostgres = require('./repository/reply-repository-postgres')
+const LikeRepository = require('../domains/likes/like-repository')
+const LikeRepositoryPostgres = require('./repository/like-repository-postgres')
 
 // use case
 const AddUserUseCase = require('../applications/use_case/add-user-use-case')
@@ -35,6 +37,7 @@ const AddReplyUseCase = require('../applications/use_case/add-reply-use-case')
 const DeleteCommentUseCase = require('../applications/use_case/delete-comment-use-case')
 const DeleteReplyUseCase = require('../applications/use_case/delete-reply-use-case')
 const GetDetailThreadUseCase = require('../applications/use_case/get-detail-thread-use-case')
+const ToggleLikeUseCase = require('../applications/use_case/toggle-like-use-case')
 
 // creating container
 const container = createContainer()
@@ -119,6 +122,20 @@ container.register([
   {
     key: ReplyRepository.name,
     Class: ReplyRepositoryPostgres,
+    parameter: {
+      dependencies: [
+        {
+          concrete: pool
+        },
+        {
+          concrete: nanoid
+        }
+      ]
+    }
+  },
+  {
+    key: LikeRepository.name,
+    Class: LikeRepositoryPostgres,
     parameter: {
       dependencies: [
         {
@@ -312,6 +329,27 @@ container.register([
         {
           name: 'replyRepository',
           internal: ReplyRepository.name
+        }
+      ]
+    }
+  },
+  {
+    key: ToggleLikeUseCase.name,
+    Class: ToggleLikeUseCase,
+    parameter: {
+      injectType: 'destructuring',
+      dependencies: [
+        {
+          name: 'likeRepository',
+          internal: LikeRepository.name
+        },
+        {
+          name: 'commentRepository',
+          internal: CommentRepository.name
+        },
+        {
+          name: 'threadRepository',
+          internal: ThreadRepository.name
         }
       ]
     }

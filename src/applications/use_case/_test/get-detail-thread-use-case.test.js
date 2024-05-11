@@ -26,14 +26,16 @@ describe('GetDetailThreadUseCase', () => {
       username: 'alzasyauqi',
       date: '2024-04-30T17:49:34.191Z',
       content: 'this is first comment.',
-      isDeleted: false
+      isDeleted: false,
+      likeCount: 0
     },
     {
       id: 'comment-456',
       username: 'satyanadella',
       date: '2024-04-30T17:51:55.432Z555Z',
       content: 'this is second comment.',
-      isDeleted: true
+      isDeleted: true,
+      likeCount: 0
     }
   ]
   const updateCommentsAfterDeleted = [
@@ -41,13 +43,15 @@ describe('GetDetailThreadUseCase', () => {
       id: comments[0].id,
       username: comments[0].username,
       date: comments[0].date,
-      content: comments[0].content
+      content: comments[0].content,
+      likeCount: comments[0].likeCount
     },
     {
       id: comments[1].id,
       username: comments[1].username,
       date: comments[1].date,
-      content: commentDeletedMark
+      content: commentDeletedMark,
+      likeCount: comments[0].likeCount
     }
   ]
   const replies = [
@@ -87,14 +91,16 @@ describe('GetDetailThreadUseCase', () => {
           date: replies[1].date,
           content: replyDeletedMark
         }
-      ]
+      ],
+      likeCount: comments[0].likeCount
     },
     {
       id: comments[1].id,
       username: comments[1].username,
       date: comments[1].date,
       content: commentDeletedMark,
-      replies: []
+      replies: [],
+      likeCount: comments[1].likeCount
     }
   ]
 
@@ -124,14 +130,16 @@ describe('GetDetailThreadUseCase', () => {
               date: replies[1].date,
               content: replyDeletedMark
             })
-          ]
+          ],
+          likeCount: comments[0].likeCount
         }),
         new DetailComment({
           id: comments[1].id,
           username: comments[1].username,
           date: comments[1].date,
           content: commentDeletedMark,
-          replies: []
+          replies: [],
+          likeCount: comments[1].likeCount
         })
       ]
     })
@@ -164,6 +172,8 @@ describe('GetDetailThreadUseCase', () => {
 
     const detailThread = await getDetailThreadUseCase.execute(useCasePayload)
 
+    console.log(detailThread)
+    console.log(expectedDetailThread)
     expect(detailThread).toEqual(expectedDetailThread)
     expect(mockThreadRepository.verifyAvailableThread).toBeCalledWith(useCasePayload.id)
     expect(mockThreadRepository.getThreadById).toBeCalledWith(useCasePayload.id)
