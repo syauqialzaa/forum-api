@@ -335,7 +335,7 @@ container.register([
   },
   {
     key: ToggleLikeUseCase.name,
-    Clas: ToggleLikeUseCase,
+    Class: ToggleLikeUseCase,
     parameter: {
       injectType: 'destructuring',
       dependencies: [
