@@ -94,7 +94,6 @@ describe('ThreadRepositoryPostgres', () => {
 
       const detailThread = await threadRepositoryPostgres.getThreadById(thread.id)
 
-      console.log(thread)
       expect(detailThread.id).toStrictEqual(thread.id)
       expect(detailThread.title).toStrictEqual(thread.title)
       expect(detailThread.body).toStrictEqual(thread.body)
