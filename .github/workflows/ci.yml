@@ -17,9 +17,9 @@ jobs:
         postgres:
           image: postgres
           env:
-            POSTGRES_USER: postgres
-            POSTGRES_PASSWORD: postgres
-            POSTGRES_DB: forum_api_test
+            POSTGRES_USER: ${{ secrets.PGUSER }}
+            POSTGRES_PASSWORD: ${{ secrets.PGPASSWORD }}
+            POSTGRES_DB: ${{ secrets.PGDATABASE }}
 
           options: >-
             --health-cmd pg_isready
@@ -41,13 +41,13 @@ jobs:
         npm run test
       env:
         CI: true
-        HOST: localhost
-        PORT: 8000
-        PGHOST: localhost
-        PGPORT: 5432
-        PGUSER: postgres
-        PGPASSWORD: postgres
-        PGDATABASE: forum_api_test
-        ACCESS_TOKEN_KEY: b6e28a574ba5b697c33834c2cedcc843b42bfccb0032419856ef874c2c7d6ee95fc7d3f7205bd774d25b005158d2c326617e0779462a1510442c52d595208c24
-        REFRESH_TOKEN_KEY: 8e1b5ed0c731cdba15479eae9af193a7cea97dff03489b17ec70762506fcd9c7ff30db46ef8ef14c6479aacc0513d90e486aa33fab2550bbb14dc01f2c417193
-        ACCESS_TOKEN_AGE: 3000
+        HOST: ${{ secrets.PGHOST }}
+        PORT: ${{ secrets.PORT }}
+        PGHOST: ${{ secrets.PGHOST }}
+        PGPORT: ${{ secrets.PGPORT }}
+        PGUSER: ${{ secrets.PGUSER }}
+        PGPASSWORD: ${{ secrets.PGPASSWORD }}
+        PGDATABASE: ${{ secrets.PGDATABASE }}
+        ACCESS_TOKEN_KEY: ${{ secrets.ACCESS_TOKEN_KEY }}
+        REFRESH_TOKEN_KEY: ${{ secrets.REFRESH_TOKEN_KEY }}
+        ACCESS_TOKEN_AGE: ${{ secrets.ACCESS_TOKEN_AGE }}
