@@ -19,7 +19,7 @@ jobs:
           env:
             POSTGRES_USER: ${{ secrets.PGUSER }}
             POSTGRES_PASSWORD: ${{ secrets.PGPASSWORD }}
-            POSTGRES_DB: ${{ secrets.PGDATABASE }}
+            POSTGRES_DB: ${{ secrets.PGDATABASE_TEST }}
 
           options: >-
             --health-cmd pg_isready
@@ -47,7 +47,7 @@ jobs:
         PGPORT: ${{ secrets.PGPORT }}
         PGUSER: ${{ secrets.PGUSER }}
         PGPASSWORD: ${{ secrets.PGPASSWORD }}
-        PGDATABASE: ${{ secrets.PGDATABASE }}
+        PGDATABASE: ${{ secrets.PGDATABASE_TEST }}
         ACCESS_TOKEN_KEY: ${{ secrets.ACCESS_TOKEN_KEY }}
         REFRESH_TOKEN_KEY: ${{ secrets.REFRESH_TOKEN_KEY }}
         ACCESS_TOKEN_AGE: ${{ secrets.ACCESS_TOKEN_AGE }}
