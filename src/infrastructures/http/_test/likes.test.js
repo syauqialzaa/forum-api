@@ -110,7 +110,7 @@ describe('/likes endpoint', () => {
       })
 
       const putLikes = JSON.parse(responseLikes.payload)
-      const allLikes = await LikesTableTestHelper.getAllLikes()
+      const allLikes = await LikesTableTestHelper.getLikes()
 
       expect(responseLikes.statusCode).toEqual(200)
       expect(putLikes.status).toEqual('success')

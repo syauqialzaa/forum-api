@@ -20,7 +20,7 @@ describe('ToggleLikeUseCase', () => {
     mockCommentRepository.verifyAvailableComment = jest.fn(() => Promise.resolve({ id: 'comment-123', isDeleted: false }))
     mockLikeRepository.checkCommentIsLiked = jest.fn(() => Promise.resolve(true))
     mockLikeRepository.unlikeAComment = jest.fn()
-    mockLikeRepository.likeAComment = jest.fn()
+    mockLikeRepository.likeAComment = jest.fn(() => Promise.resolve([{ id: 'like-123' }]))
 
     const toggleLikeUseCase = new ToggleLikeUseCase({
       likeRepository: mockLikeRepository,
@@ -57,7 +57,7 @@ describe('ToggleLikeUseCase', () => {
     mockCommentRepository.verifyAvailableComment = jest.fn(() => Promise.resolve({ id: 'comment-123', isDeleted: false }))
     mockLikeRepository.checkCommentIsLiked = jest.fn(() => Promise.resolve(false))
     mockLikeRepository.unlikeAComment = jest.fn()
-    mockLikeRepository.likeAComment = jest.fn()
+    mockLikeRepository.likeAComment = jest.fn(() => Promise.resolve([{ id: 'like-123' }]))
 
     const toggleLikeUseCase = new ToggleLikeUseCase({
       likeRepository: mockLikeRepository,
