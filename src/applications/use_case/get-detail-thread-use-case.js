@@ -1,8 +1,9 @@
 class GetDetailThreadUseCase {
-  constructor ({ threadRepository, commentRepository, replyRepository }) {
+  constructor ({ threadRepository, commentRepository, replyRepository, likeRepository }) {
     this._threadRepository = threadRepository
     this._commentRepository = commentRepository
     this._replyRepository = replyRepository
+    this._likeRepository = likeRepository
   }
 
   async execute (useCasePayload) {
@@ -11,46 +12,27 @@ class GetDetailThreadUseCase {
     await this._threadRepository.verifyAvailableThread(id)
     const thread = await this._threadRepository.getThreadById(id)
     const comments = await this._commentRepository.getCommentsByThreadId(id)
-    thread.comments = this._updateCommentsAfterDeleted(comments)
     const replies = await this._replyRepository.getRepliesByThreadId(id)
-    thread.comments = this._updateRepliesAfterDeleted(comments, replies)
 
-    return thread
-  }
-
-  _updateCommentsAfterDeleted (comments) {
-    const commentDeletedMark = '**komentar telah dihapus**'
-
-    comments.forEach(comment => {
-      comment.content = comment.isDeleted
-        ? commentDeletedMark
-        : comment.content
+    thread.comments = await Promise.all(comments.map(async comment => {
+      comment.likeCount = await this._likeRepository.getLikeCountByCommentId(comment.id)
+      comment.content = comment.isDeleted ? '**komentar telah dihapus**' : comment.content
       delete comment.isDeleted
-    })
+      return comment
+    }))
 
-    return comments
-  }
-
-  _updateRepliesAfterDeleted (comments, replies) {
-    const replyDeletedMark = '**balasan telah dihapus**'
-
-    for (let index = 0; index < comments.length; index++) {
-      const filteredReplies = replies.filter(
-        reply => reply.commentId === comments[index].id
-      )
-
+    thread.comments = comments.map(comment => {
+      const filteredReplies = replies.filter(reply => reply.commentId === comment.id)
       filteredReplies.forEach(reply => {
-        reply.content = reply.isDeleted
-          ? replyDeletedMark
-          : reply.content
+        reply.content = reply.isDeleted ? '**balasan telah dihapus**' : reply.content
         delete reply.commentId
         delete reply.isDeleted
       })
+      comment.replies = filteredReplies
+      return comment
+    })
 
-      comments[index].replies = filteredReplies
-    }
-
-    return comments
+    return thread
   }
 }
 

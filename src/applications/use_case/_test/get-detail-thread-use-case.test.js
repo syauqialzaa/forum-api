@@ -5,6 +5,7 @@ const ThreadRepository = require('../../../domains/threads/thread-repository')
 const CommentRepository = require('../../../domains/comments/comment-repository')
 const ReplyReposiotry = require('../../../domains/replies/reply-repository')
 const GetDetailThreadUseCase = require('../get-detail-thread-use-case')
+const LikeRepository = require('../../../domains/likes/like-repository')
 
 describe('GetDetailThreadUseCase', () => {
   const commentDeletedMark = '**komentar telah dihapus**'
@@ -27,7 +28,7 @@ describe('GetDetailThreadUseCase', () => {
       date: '2024-04-30T17:49:34.191Z',
       content: 'this is first comment.',
       isDeleted: false,
-      likeCount: 0
+      likeCount: 1
     },
     {
       id: 'comment-456',
@@ -35,7 +36,7 @@ describe('GetDetailThreadUseCase', () => {
       date: '2024-04-30T17:51:55.432Z555Z',
       content: 'this is second comment.',
       isDeleted: true,
-      likeCount: 0
+      likeCount: 1
     }
   ]
   const updateCommentsAfterDeleted = [
@@ -147,16 +148,19 @@ describe('GetDetailThreadUseCase', () => {
     const mockThreadRepository = new ThreadRepository()
     const mockCommentRepository = new CommentRepository()
     const mockReplyRepository = new ReplyReposiotry()
+    const mockLikeRepository = new LikeRepository()
 
     mockThreadRepository.verifyAvailableThread = jest.fn(() => Promise.resolve({ id: 'thread-123' }))
     mockThreadRepository.getThreadById = jest.fn(() => Promise.resolve(thread))
     mockCommentRepository.getCommentsByThreadId = jest.fn(() => Promise.resolve(comments))
+    mockLikeRepository.getLikeCountByCommentId = jest.fn(() => Promise.resolve(1))
     mockReplyRepository.getRepliesByThreadId = jest.fn(() => Promise.resolve(replies))
 
     const getDetailThreadUseCase = new GetDetailThreadUseCase({
       threadRepository: mockThreadRepository,
       commentRepository: mockCommentRepository,
-      replyRepository: mockReplyRepository
+      replyRepository: mockReplyRepository,
+      likeRepository: mockLikeRepository
     })
 
     getDetailThreadUseCase._updateCommentsAfterDeleted = jest.fn()
@@ -172,27 +176,9 @@ describe('GetDetailThreadUseCase', () => {
 
     const detailThread = await getDetailThreadUseCase.execute(useCasePayload)
 
-    console.log(detailThread)
-    console.log(expectedDetailThread)
     expect(detailThread).toEqual(expectedDetailThread)
     expect(mockThreadRepository.verifyAvailableThread).toBeCalledWith(useCasePayload.id)
     expect(mockThreadRepository.getThreadById).toBeCalledWith(useCasePayload.id)
     expect(mockCommentRepository.getCommentsByThreadId).toBeCalledWith(useCasePayload.id)
-    expect(getDetailThreadUseCase._updateCommentsAfterDeleted).toBeCalledWith(comments)
-    expect(getDetailThreadUseCase._updateRepliesAfterDeleted).toBeCalledWith(comments, replies)
-  })
-
-  it('should run _updateCommentsAfterDeleted function correctly', () => {
-    const getDetailThreadUseCase = new GetDetailThreadUseCase({}, {}, {})
-
-    expect(getDetailThreadUseCase._updateCommentsAfterDeleted([])).toHaveLength(0)
-    expect(getDetailThreadUseCase._updateCommentsAfterDeleted(comments)).toHaveLength(2)
-  })
-
-  it('should run _updateRepliesAfterDeleted function correctly', () => {
-    const getDetailThreadUseCase = new GetDetailThreadUseCase({}, {}, {})
-
-    expect(getDetailThreadUseCase._updateRepliesAfterDeleted(comments, [])[0].replies).toHaveLength(0)
-    expect(getDetailThreadUseCase._updateRepliesAfterDeleted(comments, replies)[0].replies).toHaveLength(2)
   })
 })
